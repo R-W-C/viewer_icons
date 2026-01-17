@@ -1,0 +1,102 @@
+
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+   <filter id="grayscale">
+      <feColorMatrix type="saturate" values="0"/>
+   </filter>
+
+   <filter id="g-only">
+      <feColorMatrix values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" />
+   </filter>
+
+    <filter id="sharpen">
+      <feConvolveMatrix order="3" preserveAlpha="true" kernelMatrix="-1 0 0 0 4 0 0 0 -1"/>
+   </filter>	
+   
+   <filter id="gamma">
+      <feComponentTransfer>
+         <feFuncR type="gamma" exponent="1.5" amplitude="2.5" offset="0" />
+         <feFuncG type="gamma" exponent="1.5" amplitude="2.5" offset="0" />
+         <feFuncB type="gamma" exponent="1.5" amplitude="2.5" offset="0" />
+      </feComponentTransfer>
+   </filter>  
+   
+   <filter id="high-contrast">
+    <feComponentTransfer>
+      <feFuncR type="linear" slope="2" intercept="-0.5"/>
+      <feFuncG type="linear" slope="2" intercept="-0.5"/>
+      <feFuncB type="linear" slope="2" intercept="-0.5"/>
+    </feComponentTransfer>
+  </filter>  
+  
+	<filter id="high-contrast2"> 
+	  <feComponentTransfer color-interpolation-filters="sRGB">
+	    <feFuncR type="table" tableValues=".996078431  .984313725"></feFuncR>
+	    <feFuncR type="gamma" exponent="1.5" amplitude="1.3" offset="0"></feFuncR>
+	    <feFuncG type="gamma" exponent="1.5" amplitude="1.3" offset="0"></feFuncG>
+	    <feFuncB type="gamma" exponent="1.5" amplitude="1.3" offset="0"></feFuncB>
+	  </feComponentTransfer>
+  </filter>
+   
+   <filter id="gaussian-blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+   </filter>   
+   
+   <filter id="average-blur">
+      <feConvolveMatrix kernelMatrix="1 1 1 1 1 1 1 1 1" order="3 3" bias="0" divisor="9" preserveAlpha="true" />
+   </filter>
+   
+    <filter id="median-blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blurred"/>
+      <feConvolveMatrix in="blurred" order="3 3" kernelMatrix="1 1 1  1 1 1  1 1 1" divisor="9" result="convolved"/>
+      <feComponentTransfer>
+          <feFuncR type="linear" slope="1.2"/>
+          <feFuncG type="linear" slope="1.2"/>
+          <feFuncB type="linear" slope="1.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="convolved"/>
+      </feMerge>
+  </filter>   
+   
+   <filter id="edge-sobel" x="0%" y="0%" width="100%" height="100%">
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0" result="RChan" />
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 1 0 0 0" result="GChan" />
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 1 0 0" result="BChan" />
+      <feConvolveMatrix in="RChan" order="3" kernelMatrix="-1 -2 -1 0 0 0 1 2 1 " result="Rhor" />
+      <feConvolveMatrix in="RChan" order="3" kernelMatrix="-1 0 1 -2 0 2 -1 0 1" result="Rver" />
+      <feComposite operator="arithmetic" k2="1" k3="1" in="Rhor" in2="Rver" />
+      <feColorMatrix type="matrix" values="0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="rededge" />
+      <feConvolveMatrix in="GChan" order="3" kernelMatrix="-1 -2 -1 0 0 0 1 2 1" result="Ghor" />
+      <feConvolveMatrix in="GChan" order="3" kernelMatrix="-1 0 1 -2 0 2 -1 0 1" result="Gver" />
+      <feComposite operator="arithmetic" k2="1" k3="1" in="Ghor" in2="Gver" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1" result="greenedge" />
+      <feConvolveMatrix in="BChan" order="3" kernelMatrix="-1 -2 -1 0 0 0 1 2 1 " result="Bhor" />
+      <feConvolveMatrix in="BChan" order="3" kernelMatrix="-1 0 1 -2 0 2 -1 0 1" result="Bver" />
+      <feComposite operator="arithmetic" k2="1" k3="1" in="Bhor" in2="Bver" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1" result="blueedge" />
+      <feComposite operator="arithmetic" in="blueedge" in2="rededge" k2="1" k3="1" />
+      <feComposite operator="arithmetic" in2="greenedge" k2="1" k3="1" result="finaledges" />
+      <feFlood flood-color="black" result="black" />
+      <feComposite operator="over" in="finaledges" />
+   </filter>
+   
+   <filter id="edge-laplacian">
+      <feConvolveMatrix kernelMatrix="0 1 0 1 -4 1 0 1 0" order="3 3" bias="0" divisor="1" preserveAlpha="true" />
+   </filter>
+   
+   <filter id="edge-prewitt">
+      <feConvolveMatrix order="3 3" preserveAlpha="true" kernelMatrix="0  1 1   -1  0 1   -1 -1 0" />
+   </filter>
+   
+   <filter id="edge-roberts">
+      <feConvolveMatrix in="SourceGraphic" preserveAlpha="true" order="3" kernelMatrix="-1,0,0,0,0,0,0,0,1" result="V1" />
+      <feConvolveMatrix in="SourceGraphic" preserveAlpha="true" order="3" kernelMatrix="1,0,0,0,0,0,0,0,-1" result="V2" />
+      <feConvolveMatrix in="SourceGraphic" preserveAlpha="true" order="3" kernelMatrix="0,0,1,0,0,0,-1,0,0" result="H1" />
+      <feConvolveMatrix in="SourceGraphic" preserveAlpha="true" order="3" kernelMatrix="0,0,-1,0,0,0,1,0,0" result="H2" />
+      <feComposite operator="arithmetic" in="V1" in2="V2" k2="1" k3="1" result="V" />
+      <feComposite operator="arithmetic" in="H1" in2="H2" k2="1" k3="1" result="H" />
+      <feBlend mode="lighten" in="H" in2="V" />
+      <feColorMatrix type="saturate" values="0" />
+   </filter>   
+</svg>
